@@ -36,6 +36,10 @@ import {
   // Phase 4 (V1.2)
   customerContextSchema,
   projectTimelineSchema,
+  // Phase 5 (V1.1) — Notebook Management
+  createNotebookSchema,
+  renameNotebookSchema,
+  deleteNotebookSchema,
 } from './schemas.js';
 
 /**
@@ -254,5 +258,25 @@ export const TOOL_DEFINITIONS: unknown[] = [
     description:
       'Build a chronological timeline of all project activities. Aggregates meetings, daily/weekly reports, design documents, implementation records, and TODOs into a unified timeline sorted by date. Returns a complete project history for AI to understand project evolution.',
     inputSchema: zodToJsonSchema(projectTimelineSchema),
+  },
+
+  // ─── Phase 5 (V1.1): Notebook Management ──────────────────────────
+  {
+    name: 'create_notebook',
+    description:
+      'Create a new SiYuan notebook with the given name. Returns the new notebook ID and details.',
+    inputSchema: zodToJsonSchema(createNotebookSchema),
+  },
+  {
+    name: 'rename_notebook',
+    description:
+      'Rename an existing SiYuan notebook by its ID.',
+    inputSchema: zodToJsonSchema(renameNotebookSchema),
+  },
+  {
+    name: 'delete_notebook',
+    description:
+      'Delete a SiYuan notebook by its ID. WARNING: This permanently removes the notebook and all contained documents.',
+    inputSchema: zodToJsonSchema(deleteNotebookSchema),
   },
 ];

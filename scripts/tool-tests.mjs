@@ -1,7 +1,7 @@
 /**
  * SiYuan MCP Tool Tests - Automated Integration Test Runner
  *
- * Connects to a running MCP server (SSE mode) and exercises all 20 tools
+ * Connects to a running MCP server (SSE mode) and exercises all 24 tools
  * against a real SiYuan instance. Generates TEST_REPORT.md with results.
  *
  * Usage:
@@ -54,6 +54,9 @@ const ctx = {
   testKeyword: 'MCP',
   testDocTitle: `MCP-AutoTest-${Date.now()}`,
   createdDocIds: [],   // for cleanup
+  // Notebook lifecycle test state
+  testNotebookId: '',
+  testNotebookName: `AutoTest-NB-${Date.now()}`,
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -413,6 +416,77 @@ const TEST_CASES = [
       if (result.isError) return { pass: false, detail: `Error: ${truncate(text)}` };
       if (hasHtmlLeakage(text)) return { pass: false, detail: `HTML leakage detected: ${truncate(text)}` };
       return { pass: true, detail: `Generated ${text.length} chars` };
+    },
+  },
+
+  // ─── Phase 5: Notebook Management (4) ──────────────────────────
+  {
+    id: 21,
+    tool: 'create_notebook',
+    phase: 'Phase 5',
+    name: '创建笔记本',
+    args: (ctx) => ({ name: ctx.testNotebookName }),
+    validate: (result, ctx) => {
+      const text = extractText(result);
+      if (result.isError) return { pass: false, detail: `Error: ${truncate(text)}` };
+      const idMatch = text.match(/\*\*ID\*\*:\s*(\S+)/);
+      if (idMatch && idMatch[1]) {
+        ctx.testNotebookId = idMatch[1];
+        return { pass: true, detail: `Created notebook ID: ${ctx.testNotebookId}` };
+      }
+      return { pass: false, detail: `No notebook ID in output: ${truncate(text)}` };
+    },
+  },
+  {
+    id: 22,
+    tool: 'list_notebooks',
+    phase: 'Phase 5',
+    name: '验证已创建的笔记本',
+    args: {},
+    skip: (ctx) => !ctx.testNotebookId,
+    validate: (result, ctx) => {
+      const text = extractText(result);
+      if (result.isError) return { pass: false, detail: `Error: ${truncate(text)}` };
+      if (text.includes(ctx.testNotebookName)) {
+        return { pass: true, detail: `Notebook "${ctx.testNotebookName}" found in list` };
+      }
+      return { pass: false, detail: `Notebook "${ctx.testNotebookName}" NOT found: ${truncate(text)}` };
+    },
+  },
+  {
+    id: 23,
+    tool: 'rename_notebook',
+    phase: 'Phase 5',
+    name: '重命名笔记本',
+    args: (ctx) => ({
+      notebook_id: ctx.testNotebookId,
+      name: `${ctx.testNotebookName}-renamed`,
+    }),
+    skip: (ctx) => !ctx.testNotebookId,
+    validate: (result, ctx) => {
+      const text = extractText(result);
+      if (result.isError) return { pass: false, detail: `Error: ${truncate(text)}` };
+      if (text.includes('renamed')) {
+        ctx.testNotebookName = `${ctx.testNotebookName}-renamed`;
+        return { pass: true, detail: `Notebook renamed successfully` };
+      }
+      return { pass: true, detail: 'Rename completed' };
+    },
+  },
+  {
+    id: 24,
+    tool: 'delete_notebook',
+    phase: 'Phase 5',
+    name: '删除笔记本',
+    args: (ctx) => ({ notebook_id: ctx.testNotebookId }),
+    skip: (ctx) => !ctx.testNotebookId,
+    validate: (result, ctx) => {
+      const text = extractText(result);
+      if (result.isError) return { pass: false, detail: `Error: ${truncate(text)}` };
+      if (text.includes('deleted') || text.includes('已删除') || text.includes('removed')) {
+        return { pass: true, detail: 'Notebook deleted successfully (cleanup)' };
+      }
+      return { pass: true, detail: 'Delete completed' };
     },
   },
 ];

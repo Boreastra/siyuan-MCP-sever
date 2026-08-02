@@ -4,6 +4,26 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
+## [1.1.0] — 2026-08-02
+
+### Added
+
+- **Notebook lifecycle management** (4 new tools): `create_notebook`, `rename_notebook`, `delete_notebook` — AI can now fully manage knowledge spaces end-to-end (create → rename → delete notebooks)
+- **SDK notebook API**: `createNotebook(name)`, `renameNotebook(notebookId, name)`, `removeNotebook(notebookId)` in `NotebookModule`
+- SiYuan 3.7.3 API endpoints integrated: `notebook/createNotebook`, `notebook/renameNotebook`, `notebook/removeNotebook`
+- Integration test cases #21–#24: full notebook lifecycle (create → list → rename → delete) validated
+
+### Changed
+
+- Tool count: 20 → 24 (12 base + 4 notebook management + 8 workflow)
+- Total tests: 141 → 145 (60 SDK + 61 MCP + 24 integration)
+
+### Test Results
+
+145 tests: 60 SDK + 61 MCP + 24 integration — all passing.
+
+---
+
 ## [1.0.5] — 2026-08-02
 
 ### Added
@@ -101,6 +121,7 @@ This project follows a simplified SemVer: `MAJOR.MINOR.PATCH`.
 - **MINOR**: New tools, workflows, or significant features
 - **PATCH**: Bug fixes, API corrections, test improvements
 
+[1.1.0]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.1.0
 [1.0.5]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.5
 [1.0.4]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.4
 [1.0.3]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.3

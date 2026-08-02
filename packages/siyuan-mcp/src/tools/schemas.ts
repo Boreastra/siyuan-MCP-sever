@@ -191,3 +191,21 @@ export const projectTimelineSchema = z.object({
     .describe('Maximum number of documents to fetch'),
 });
 export type ProjectTimelineInput = z.infer<typeof projectTimelineSchema>;
+
+// ─── Phase 5 (V1.1): Notebook Management ─────────────────────────
+
+export const createNotebookSchema = z.object({
+  name: z.string().min(1).describe('Name for the new notebook'),
+});
+export type CreateNotebookInput = z.infer<typeof createNotebookSchema>;
+
+export const renameNotebookSchema = z.object({
+  notebook_id: z.string().min(1).describe('Notebook ID to rename'),
+  name: z.string().min(1).describe('New notebook name'),
+});
+export type RenameNotebookInput = z.infer<typeof renameNotebookSchema>;
+
+export const deleteNotebookSchema = z.object({
+  notebook_id: z.string().min(1).describe('Notebook ID to delete'),
+});
+export type DeleteNotebookInput = z.infer<typeof deleteNotebookSchema>;

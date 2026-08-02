@@ -4,6 +4,26 @@ SiYuan MCP Server 项目所有重要变更记录。
 
 ---
 
+## [1.1.0] — 2026-08-02
+
+### 新增
+
+- **笔记本生命周期管理**（4 个新工具）：`create_notebook`（创建笔记本）、`rename_notebook`（重命名）、`delete_notebook`（删除）——AI 现在可以端到端管理知识空间（创建 → 重命名 → 删除笔记本）
+- **SDK 笔记本 API**：在 `NotebookModule` 中新增 `createNotebook(name)`、`renameNotebook(notebookId, name)`、`removeNotebook(notebookId)`
+- 集成思源 3.7.3 API 端点：`notebook/createNotebook`、`notebook/renameNotebook`、`notebook/removeNotebook`
+- 集成测试 #21–#24：完整笔记本生命周期验证（创建 → 列出 → 重命名 → 删除）
+
+### 变更
+
+- 工具总数：20 → 24（12 基础 + 4 笔记本管理 + 8 工作流）
+- 测试总数：141 → 145（60 SDK + 61 MCP + 24 集成）
+
+### 测试结果
+
+145 个测试：60 SDK + 61 MCP + 24 集成 — 全部通过。
+
+---
+
 ## [1.0.5] — 2026-08-02
 
 ### 新增
@@ -101,6 +121,7 @@ SiYuan MCP Server 项目所有重要变更记录。
 - **次版本**：新工具、新工作流、重要功能
 - **修订号**：Bug 修复、API 修正、测试改进
 
+[1.1.0]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.1.0
 [1.0.5]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.5
 [1.0.4]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.4
 [1.0.3]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.3

@@ -113,6 +113,18 @@ export class SiYuanClient {
     return this.notebooks.listNotebooks();
   }
 
+  async createNotebook(name: string) {
+    return this.notebooks.createNotebook(name);
+  }
+
+  async renameNotebook(notebookId: string, name: string): Promise<void> {
+    return this.notebooks.renameNotebook(notebookId, name);
+  }
+
+  async removeNotebook(notebookId: string): Promise<void> {
+    return this.notebooks.removeNotebook(notebookId);
+  }
+
   async searchNotes(keyword: string, limit = 10): Promise<SearchResult[]> {
     return this.search.searchNotes(keyword, limit);
   }

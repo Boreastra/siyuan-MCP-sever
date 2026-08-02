@@ -36,6 +36,10 @@ import {
   // Phase 4 (V1.2)
   customerContextSchema,
   projectTimelineSchema,
+  // Phase 5 (V1.1) — Notebook Management
+  createNotebookSchema,
+  renameNotebookSchema,
+  deleteNotebookSchema,
 } from './schemas.js';
 
 // Workflows
@@ -160,6 +164,14 @@ export class ToolHandlers {
           return await this.handleCustomerContext(args);
         case 'project_timeline':
           return await this.handleProjectTimeline(args);
+
+        // ─── Phase 5 (V1.1) — Notebook Management ──────────────────
+        case 'create_notebook':
+          return await this.handleCreateNotebook(args);
+        case 'rename_notebook':
+          return await this.handleRenameNotebook(args);
+        case 'delete_notebook':
+          return await this.handleDeleteNotebook(args);
 
         default:
           return this.error(`Unknown tool: ${name}`);
@@ -467,6 +479,41 @@ export class ToolHandlers {
     const { project, depth } = projectTimelineSchema.parse(args);
     const result = await this.projectTimeline.execute({ project, depth });
     return this.text(result.content);
+  }
+
+  // ─── Phase 5 (V1.1) — Notebook Management Handlers ──────────────
+
+  private async handleCreateNotebook(
+    args: Record<string, unknown>,
+  ): Promise<ToolHandlerResult> {
+    const { name } = createNotebookSchema.parse(args);
+    const notebook = await this.siyuan.notebooks.createNotebook(name);
+
+    return this.text(
+      `Notebook created successfully.\n- **ID**: ${notebook.id}\n- **Name**: ${notebook.name}\n- **Icon**: ${notebook.icon || 'none'}\n- **Closed**: ${notebook.closed ?? false}`,
+    );
+  }
+
+  private async handleRenameNotebook(
+    args: Record<string, unknown>,
+  ): Promise<ToolHandlerResult> {
+    const { notebook_id, name } = renameNotebookSchema.parse(args);
+    await this.siyuan.notebooks.renameNotebook(notebook_id, name);
+
+    return this.text(
+      `Notebook ${notebook_id} renamed to "${name}".`,
+    );
+  }
+
+  private async handleDeleteNotebook(
+    args: Record<string, unknown>,
+  ): Promise<ToolHandlerResult> {
+    const { notebook_id } = deleteNotebookSchema.parse(args);
+    await this.siyuan.notebooks.removeNotebook(notebook_id);
+
+    return this.text(
+      `Notebook ${notebook_id} has been deleted.`,
+    );
   }
 
   // ─── Response Helpers ────────────────────────────────────────────

@@ -17,6 +17,7 @@ export interface Notebook {
   name: string;
   icon: string;
   sort: number;
+  closed?: boolean;
   conf: Record<string, unknown>;
 }
 

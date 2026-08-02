@@ -3,7 +3,7 @@
     SiYuan MCP Server - Full Automated Test Suite
 .DESCRIPTION
     Builds the project, starts MCP server in SSE mode, connects to SiYuan API,
-    runs all 20 tool tests, and generates TEST_REPORT.md.
+    runs all 24 tool tests, and generates TEST_REPORT.md.
 .PARAMETER SkipBuild
     Skip the build step (use existing dist/ output).
 .PARAMETER Port

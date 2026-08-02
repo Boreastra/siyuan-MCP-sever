@@ -5,8 +5,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-22-green.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org)
 [![MCP](https://img.shields.io/badge/MCP-1.0-purple.svg)](https://modelcontextprotocol.io)
-[![Version](https://img.shields.io/badge/version-1.0.5-orange.svg)]()
-[![Tests](https://img.shields.io/badge/tests-116-brightgreen.svg)]()
+[![Version](https://img.shields.io/badge/version-1.1.0-orange.svg)]()
+[![Tests](https://img.shields.io/badge/tests-145-brightgreen.svg)]()
 
 ---
 
@@ -503,6 +503,9 @@ AI → Workflow → Tool → SDK → SiYuan API
 | `create_note` | 创建文档（支持 auto_link） | `notebook`, `path`, `title`, `markdown`, `auto_link` |
 | `append_note` | 追加文档内容 | `doc_id`, `markdown` |
 | `list_notebooks` | 列出所有笔记本 | — |
+| `create_notebook` | 创建笔记本 | `name` |
+| `rename_notebook` | 重命名笔记本 | `notebook_id`, `name` |
+| `delete_notebook` | 删除笔记本 | `notebook_id` |
 | `get_daily_note` | 获取/创建今日日记 | `notebook?` |
 | `list_todos` | 列出所有待办 | `notebook?` |
 | `create_todo` | 创建待办 | `doc_id`, `content` |
@@ -708,13 +711,13 @@ siyuan-ai/
 │       │   ├── workflows/   # ★ AI 工作流（8 个）
 │       │   ├── templates/   # Prompt 模板（6 个 .md 文件）
 │       │   ├── cache/       # TTL 知识缓存
-│       │   ├── tools/       # Tool Schema + Handler
+│       │   ├── tools/       # Tool Schema + Handler（24 个工具）
 │       │   └── transport/   # stdio + SSE 传输
 │       └── test/            # 116 个测试用例
 │
 ├── docker/                  # Docker 部署
 ├── examples/                # 示例配置
-├── package.json             # v1.2.0
+├── package.json             # v1.1.0
 └── README.md
 ```
 
