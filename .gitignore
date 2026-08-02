@@ -1,0 +1,34 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+.env.*.local
+coverage/
+*.log
+.DS_Store
+docker/data/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Test artifacts
+TEST_REPORT.md
+test-output/
+
+# pnpm store cache
+.pnpm-store/
+
+# Build artifact temp files
+*.bundled_*.mjs
+*.timestamp-*.mjs
+
+# WorkBuddy workspace data
+.workbuddy/

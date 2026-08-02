@@ -1,0 +1,50 @@
+# Docker Compose: SiYuan + MCP Server
+# 部署在 NAS 上，MCP 通过容器网络访问思源
+
+services:
+  # ─── 思源笔记 ────────────────────────────────────────────────────
+  siyuan:
+    image: b3log/siyuan:latest
+    container_name: siyuan
+    restart: unless-stopped
+    volumes:
+      - ./siyuan-data:/siyuan/data
+    ports:
+      - "6806:6806"
+    environment:
+      # 思源访问授权码（在思源中设置为 API Token）
+      - PUID=1000
+      - PGID=1000
+    command: --port=6806 --accessAuthCode=YOUR_AUTH_CODE
+
+  # ─── SiYuan MCP Server ───────────────────────────────────────────
+  siyuan-mcp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: siyuan-mcp
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # 通过容器网络访问思源（不经过宿主机）
+      SIYUAN_URL: http://siyuan:6806
+      SIYUAN_TOKEN: YOUR_SIYUAN_TOKEN
+      PORT: 3000
+      LOG_LEVEL: info
+      TIMEOUT: 10000
+      RETRY: 3
+      TRANSPORT: sse
+    depends_on:
+      - siyuan
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

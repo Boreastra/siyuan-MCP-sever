@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "siyuan": {
+      "url": "http://localhost:3000/sse",
+      "transport": "sse"
+    }
+  }
+}

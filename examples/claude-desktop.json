@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "siyuan": {
+      "command": "node",
+      "args": ["/path/to/siyuan-ai/packages/siyuan-mcp/dist/index.js"],
+      "env": {
+        "SIYUAN_URL": "http://127.0.0.1:6806",
+        "SIYUAN_TOKEN": "YOUR_SIYUAN_TOKEN",
+        "TRANSPORT": "stdio",
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}

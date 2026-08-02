@@ -1,0 +1,35 @@
+services:
+  siyuan-mcp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: siyuan-mcp
+    restart: unless-stopped
+    ports:
+      - "${MCP_PORT:-3000}:3000"
+    environment:
+      # SiYuan connection — change to your SiYuan URL
+      SIYUAN_URL: ${SIYUAN_URL:-http://host.docker.internal:6806}
+      SIYUAN_TOKEN: ${SIYUAN_TOKEN:-}
+
+      # Server
+      PORT: 3000
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      TIMEOUT: ${TIMEOUT:-10000}
+      RETRY: ${RETRY:-3}
+
+      # Transport: sse for Docker (HTTP + health check)
+      TRANSPORT: sse
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
