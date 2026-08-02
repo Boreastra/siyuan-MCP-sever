@@ -631,7 +631,7 @@ async function main() {
 
   // Collect environment info
   const envInfo = {
-    version: process.env.npm_package_version || '1.3.5',
+    version: process.env.npm_package_version || '1.0.5',
     siyuanUrl: process.env.SIYUAN_URL || 'http://127.0.0.1:6806',
     nodeVersion: process.version,
     buildOk: true,

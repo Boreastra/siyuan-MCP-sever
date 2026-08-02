@@ -22,7 +22,7 @@ export class SiYuanMCPServer {
 
   constructor(siyuan: SiYuanClient) {
     this.server = new Server(
-      { name: 'siyuan-mcp', version: '1.3.5' },
+      { name: 'siyuan-mcp', version: '1.0.5' },
       { capabilities: { tools: {} } },
     );
     this.handlers = new ToolHandlers(siyuan);

@@ -4,12 +4,13 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
-## [1.3.5] — 2026-08-02
+## [1.0.5] — 2026-08-02
 
 ### Added
 
 - **Automated integration test system** (`scripts/full-test.ps1` + `scripts/tool-tests.mjs`): build → start MCP (SSE) → connect SiYuan → exercise all 20 tools → generate `TEST_REPORT.md`
 - `pnpm test:full` and `pnpm test:full:skip-build` npm scripts
+- `CHANGELOG.md` and `CHANGELOG_zh.md` (this file), Git push workflow
 
 ### Fixed
 
@@ -18,6 +19,7 @@ All notable changes to the SiYuan MCP Server project.
 - **searchDocs fallback**: API returns flat array without `id` field — extract ID from `path` (last segment minus `.sy`); handle `hPath` notebook prefix
 - **Entity decoding order**: `&amp;` MUST be decoded first (before `&gt;`/`&lt;`/`&quot;`) to handle SiYuan double-encoding like `&amp;gt;`
 - **meeting_summary empty tables**: section headers now use prefix matching instead of exact match; table rows (starting with `|`) now parsed
+- `.gitignore` enhanced: exclude `.env`, `.pnpm-store/`, `dist/`, `TEST_REPORT.md`, `.workbuddy/`, build artifacts
 
 ### Test Results
 
@@ -25,7 +27,7 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
-## [1.3.4] — 2026-08-01
+## [1.0.4] — 2026-08-01
 
 ### Fixed
 
@@ -37,7 +39,7 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
-## [1.3.3] — 2026-08-01
+## [1.0.3] — 2026-08-01
 
 ### Fixed
 
@@ -49,7 +51,7 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
-## [1.3.2] — 2026-08-01
+## [1.0.2] — 2026-08-01
 
 ### Fixed
 
@@ -62,7 +64,7 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
-## [1.3.1] — 2026-08-01
+## [1.0.1] — 2026-08-01
 
 ### Fixed
 
@@ -77,7 +79,7 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
-## [1.3.0] — 2026-07-31
+## [1.0.0] — 2026-07-31
 
 ### Added
 
@@ -99,9 +101,9 @@ This project follows a simplified SemVer: `MAJOR.MINOR.PATCH`.
 - **MINOR**: New tools, workflows, or significant features
 - **PATCH**: Bug fixes, API corrections, test improvements
 
-[1.3.5]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.3.5
-[1.3.4]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.3.4
-[1.3.3]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.3.3
-[1.3.2]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.3.2
-[1.3.1]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.3.1
-[1.3.0]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.3.0
+[1.0.5]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.5
+[1.0.4]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.4
+[1.0.3]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.3
+[1.0.2]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.2
+[1.0.1]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.1
+[1.0.0]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.0
