@@ -4,8 +4,9 @@
  * SiYuan doesn't have a dedicated "todo" API. Todos are checkbox list items
  * inside documents. This module uses SQL + block APIs to manage them.
  *
- * A "todo" in SiYuan is a NodeListItem block whose markdown starts with
- * `- [ ]` (incomplete) or `- [x]` (complete).
+ * A "todo" in SiYuan is a task-list item block (blocks.type='i',
+ * blocks.subtype='t') whose markdown starts with `- [ ]` (incomplete) or
+ * `- [x]` / `- [X]` (complete).
  */
 
 import type { SiYuanHTTPClient } from './client.js';
@@ -27,7 +28,7 @@ export class TodoModule {
 
   /**
    * List all todo items across all notebooks.
-   * Uses SQL to query NodeListItem blocks with checkbox markers.
+   * Uses SQL to query task-list blocks with checkbox markers.
    *
    * @param notebookId - Optional: restrict to a specific notebook
    * @returns Todo items with done status and location info
@@ -35,7 +36,15 @@ export class TodoModule {
   async listTodos(notebookId?: string): Promise<TodoItem[]> {
     const boxClause = notebookId ? `AND box = '${this.sanitize(notebookId)}'` : '';
 
-    const stmt = `SELECT id, content, markdown, box, path, hpath FROM blocks WHERE type = 'NodeListItem' AND (markdown LIKE '- [ ]%' OR markdown LIKE '- [x]%') ${boxClause} LIMIT 200`;
+    // SiYuan blocks.type uses lowercase short codes, NOT AST names:
+    //   'i' = list item, 'l' = list container, 'd' = document ...
+    // `type = 'NodeListItem'` matches ZERO rows — the historical cause of
+    // list_todos always returning 0. Task-list (checkbox) items are identified
+    // by subtype = 't'; verified against SiYuan 3.8.8 that subtype='t' items
+    // always carry a `- [ ]` / `- [x]` / `- [X]` markdown prefix.
+    // ORDER BY updated DESC: with LIMIT 200 an unordered scan truncates
+    // arbitrarily; keep the most recently updated todos.
+    const stmt = `SELECT id, content, markdown, box, path, hpath FROM blocks WHERE type = 'i' AND subtype = 't' ${boxClause} ORDER BY updated DESC LIMIT 200`;
 
     // SiYuan /api/query/sql returns data as Array<Record<string, unknown>> (each row is an object with column-name keys)
     const rows = await this.client.post<Array<Record<string, unknown>>>('query/sql', { stmt });
@@ -47,10 +56,13 @@ export class TodoModule {
 
     return rows.map((row) => {
       const markdown = String(row.markdown ?? '');
+      // Done state comes from the item's OWN checkbox marker (the markdown
+      // prefix), not `markdown.includes('[x]')` — parent list items may embed
+      // nested children whose markers would otherwise flip the parent's state.
       return {
         id: String(row.id ?? ''),
         content: this.extractTodoText(markdown),
-        done: markdown.includes('[x]') || markdown.includes('[X]'),
+        done: /^[-*+]\s*\[[xX]\]/.test(markdown),
         box: String(row.box ?? ''),
         path: String(row.path ?? ''),
         hPath: String(row.hpath ?? ''),

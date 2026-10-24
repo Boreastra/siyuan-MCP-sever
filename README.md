@@ -5,8 +5,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-22-green.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org)
 [![MCP](https://img.shields.io/badge/MCP-1.0-purple.svg)](https://modelcontextprotocol.io)
-[![Version](https://img.shields.io/badge/version-1.1.0-orange.svg)]()
-[![Tests](https://img.shields.io/badge/tests-145-brightgreen.svg)]()
+[![Version](https://img.shields.io/badge/version-1.1.1-orange.svg)]()
+[![Tests](https://img.shields.io/badge/tests-125-brightgreen.svg)]()
 
 ---
 

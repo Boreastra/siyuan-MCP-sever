@@ -4,6 +4,26 @@ SiYuan MCP Server 项目所有重要变更记录。
 
 ---
 
+## [1.1.1] — 2026-10-24
+
+### 修复
+
+- **list_todos 始终返回 0 条**：思源 `blocks` 表的 `type` 列存小写短代码（`i`=列表项、`l`=列表容器、`d`=文档），AST 名称 `'NodeListItem'` 匹配 0 行。查询改为 `type = 'i' AND subtype = 't'`（任务列表项），经思源 3.8.8 真实数据验证与 checkbox 标记 100% 等价（607 条）。
+- **完成状态判定**：`markdown.includes('[x]')` 改为前缀正则 `/^[-*+]\s*\[[xX]\]/`——父列表项的 markdown 内嵌子项内容，子项的 `[x]` 标记会翻转父项状态。
+- **截取确定性**：`LIMIT 200` 前增加 `ORDER BY updated DESC`——待办超过 200 条时，无排序的截取是随机的。
+- **MCP 入口 .env 加载**（`packages/siyuan-mcp/src/index.ts`）：按包目录相对路径加载 .env（包目录 → 仓库根目录 → cwd 兜底），不再只依赖 `process.cwd()`——WorkBuddy 从任意工作目录启动服务时也能找到配置。
+
+### 新增
+
+- `scripts/accept-list-todos.mjs`：`list_todos` 真实 MCP 会话只读验收脚本（schema 检查、真实数据交叉核对、笔记本过滤验证）
+- 4 个回归单元测试：SQL 形态、排序、大写 `[X]` 前缀、父项嵌套混合状态
+
+### 测试结果
+
+125 个单元测试：64 SDK + 61 MCP — 全部通过。真实 MCP 会话验收：返回 200 条待办（170 已完成），未完成样本全部命中，schema 未变，笔记本过滤验证通过。
+
+---
+
 ## [1.1.0] — 2026-08-02
 
 ### 新增
@@ -121,6 +141,7 @@ SiYuan MCP Server 项目所有重要变更记录。
 - **次版本**：新工具、新工作流、重要功能
 - **修订号**：Bug 修复、API 修正、测试改进
 
+[1.1.1]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.1.0
 [1.0.5]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.5
 [1.0.4]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.4

@@ -4,6 +4,26 @@ All notable changes to the SiYuan MCP Server project.
 
 ---
 
+## [1.1.1] — 2026-10-24
+
+### Fixed
+
+- **list_todos always returning 0 results**: SiYuan's `blocks` table stores block types as lowercase short codes (`'i'` = list item, `'l'` = list container, `'d'` = document) — the AST name `'NodeListItem'` matches zero rows. Query now filters `type = 'i' AND subtype = 't'` (task-list items), verified 100% equivalent to checkbox markers against SiYuan 3.8.8 real data (607 items).
+- **Done-state detection**: replaced `markdown.includes('[x]')` with prefix regex `/^[-*+]\s*\[[xX]\]/` — parent list items embed nested children in their markdown, whose `[x]` markers would flip the parent's state.
+- **Deterministic truncation**: added `ORDER BY updated DESC` before `LIMIT 200` — with more than 200 todos, unordered scans truncated arbitrarily.
+- **.env loading in MCP entry** (`packages/siyuan-mcp/src/index.ts`): load .env relative to the package directory (package dir → repo root → cwd fallback) instead of `process.cwd()` only, so WorkBuddy spawning the server from an arbitrary working directory still finds the config.
+
+### Added
+
+- `scripts/accept-list-todos.mjs`: read-only real-MCP-session acceptance script for `list_todos` (schema check, ground-truth cross-check, notebook filter verification)
+- 4 regression unit tests: SQL shape, ordering, uppercase `[X]` prefix, mixed-state nested children
+
+### Test Results
+
+125 unit tests: 64 SDK + 61 MCP — all passing. Real MCP session acceptance: 200 todos returned (170 completed), unfinished samples all found, schema unchanged, notebook filter verified.
+
+---
+
 ## [1.1.0] — 2026-08-02
 
 ### Added
@@ -121,6 +141,7 @@ This project follows a simplified SemVer: `MAJOR.MINOR.PATCH`.
 - **MINOR**: New tools, workflows, or significant features
 - **PATCH**: Bug fixes, API corrections, test improvements
 
+[1.1.1]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.1.1
 [1.1.0]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.1.0
 [1.0.5]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.5
 [1.0.4]: https://github.com/Boreastra/siyuan-MCP-sever/releases/tag/v1.0.4

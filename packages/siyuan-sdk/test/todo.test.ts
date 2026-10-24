@@ -45,6 +45,49 @@ describe('TodoModule', () => {
       expect(stmt).toContain("box = 'nb1'");
     });
 
+    it('regression: queries task-list items by type=i AND subtype=t, not NodeListItem', async () => {
+      // SiYuan blocks.type stores lowercase short codes ('i' = list item);
+      // `type = 'NodeListItem'` matches zero rows and made list_todos return 0.
+      mock.mockResponse('query/sql', apiResponse([]));
+
+      await module.listTodos();
+
+      const stmt = mock.getCalls()[0].payload?.stmt as string;
+      expect(stmt).toContain("type = 'i'");
+      expect(stmt).toContain("subtype = 't'");
+      expect(stmt).not.toContain('NodeListItem');
+    });
+
+    it('regression: orders by updated DESC so LIMIT keeps the most recent todos', async () => {
+      mock.mockResponse('query/sql', apiResponse([]));
+
+      await module.listTodos();
+
+      const stmt = mock.getCalls()[0].payload?.stmt as string;
+      expect(stmt).toContain('ORDER BY updated DESC');
+      expect(stmt).toContain('LIMIT 200');
+    });
+
+    it('regression: detects done state from own checkbox prefix, uppercase [X]', async () => {
+      mock.mockResponse('query/sql', apiResponse([
+        { id: 't1', content: '', markdown: '- [X] Uppercase done', box: 'nb1', path: '/p', hpath: '/p' },
+      ]));
+
+      const result = await module.listTodos();
+      expect(result[0].done).toBe(true);
+    });
+
+    it('regression: parent with [ ] prefix stays undone even if nested children contain [x]', async () => {
+      // Parent markdown embeds nested children; `includes('[x]')` would
+      // wrongly flip the parent's done state.
+      mock.mockResponse('query/sql', apiResponse([
+        { id: 't1', content: '', markdown: '- [ ] Parent task\n\n  - [x] Child done', box: 'nb1', path: '/p', hpath: '/p' },
+      ]));
+
+      const result = await module.listTodos();
+      expect(result[0].done).toBe(false);
+    });
+
     it('returns empty array when no todos', async () => {
       mock.mockResponse('query/sql', apiResponse([]));
       const result = await module.listTodos();

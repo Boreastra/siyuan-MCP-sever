@@ -1,6 +1,6 @@
 {
   "name": "siyuan-ai",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "SiYuan knowledge service layer for AI workflows",
   "license": "MIT",

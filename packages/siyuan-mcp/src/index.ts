@@ -8,7 +8,29 @@
  * sse    → HTTP/SSE transport for Docker deployment and remote access
  */
 
-import 'dotenv/config';
+// Load .env relative to this file's location, NOT process.cwd().
+// WorkBuddy may spawn this process from an arbitrary working directory;
+// `import 'dotenv/config'` would then fail to find the config.
+// Precedence: package dir .env → repo root .env → cwd/.env (legacy fallback).
+// dotenv never overrides already-set env vars, so externally provided
+// SIYUAN_URL / SIYUAN_TOKEN keep their original priority.
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { config as loadEnv } from 'dotenv';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+for (const envPath of [
+  path.resolve(here, '../.env'),       // packages/siyuan-mcp/.env
+  path.resolve(here, '../../.env'),    // repo root .env
+  path.resolve(process.cwd(), '.env'), // legacy: original cwd-based behavior
+]) {
+  if (existsSync(envPath)) {
+    loadEnv({ path: envPath });
+    break;
+  }
+}
+
 import { SiYuanClient, setLogLevel, type LogLevel } from '@siyuan-ai/sdk';
 
 import { SiYuanMCPServer } from './server/mcp-server.js';

@@ -30,5 +30,8 @@ test-output/
 *.bundled_*.mjs
 *.timestamp-*.mjs
 
+# Editor backup files
+*.bak-*
+
 # WorkBuddy workspace data
 .workbuddy/
